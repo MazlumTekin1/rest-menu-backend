@@ -1,5 +1,6 @@
 package commands
 
+//PATH: internal/application/commands/menu_commands.go
 type CreateMenuCommand struct {
 	Name         string
 	RestaurantID int

@@ -1,5 +1,7 @@
 package domain
 
+//PATH: internal/domain/category.go
+
 import (
 	"errors"
 	"time"

@@ -1,5 +1,7 @@
 package commands
 
+//PATH: internal/application/commands/product_commands.go
+
 type CreateProductCommand struct {
 	Name               string
 	MenuID             int

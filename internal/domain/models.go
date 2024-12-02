@@ -1,5 +1,7 @@
 package domain
 
+//PATH: internal/domain/models.go
+
 import (
 	"time"
 )

@@ -1,5 +1,7 @@
 package domain
 
+//PATH: internal/domain/menu.go
+
 import (
 	"errors"
 	"time"

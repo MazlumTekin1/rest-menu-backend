@@ -1,5 +1,7 @@
 package domain
 
+//PATH: internal/domain/product.go
+
 import (
 	"errors"
 	"rest-menu-service/internal/application/commands"

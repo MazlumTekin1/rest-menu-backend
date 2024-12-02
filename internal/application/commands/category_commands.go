@@ -1,5 +1,7 @@
 package commands
 
+//PATH: internal/application/commands/category_commands.go
+
 type CreateCategoryCommand struct {
 	Name         string
 	MenuID       int

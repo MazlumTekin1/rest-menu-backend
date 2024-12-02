@@ -1,8 +1,9 @@
 package config
 
+//PATH: internal/infrastructure/config/database.go
+
 import (
 	"fmt"
-	"os"
 	"rest-menu-service/internal/domain"
 
 	"gorm.io/driver/postgres"
@@ -27,63 +28,33 @@ func NewDatabaseConfig() *DatabaseConfig {
 	}
 }
 
-func (c *DatabaseConfig) GetConnectionString() string {
+func GetConnectionString() string {
+	config := NewDatabaseConfig()
 	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		c.User,
-		c.Password,
-		c.Host,
-		c.Port,
-		c.DBName,
+		config.User,
+		config.Password,
+		config.Host,
+		config.Port,
+		config.DBName,
 	)
 }
 
-func getEnvOrDefault(key, defaultValue string) string {
-	if value, exists := os.LookupEnv(key); exists {
-		return value
-	}
-	return defaultValue
-}
-
-// func SetupDatabase() (*pgxpool.Pool, error) {
-// 	config := NewDatabaseConfig()
-// 	connString := config.GetConnectionString()
-
-// 	poolConfig, err := pgxpool.ParseConfig(connString)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("error parsing connection string: %v", err)
-// 	}
-
-// 	// Configure pool settings
-// 	poolConfig.MaxConns = 10
-// 	poolConfig.MinConns = 2
-
-// 	pool, err := pgxpool.NewWithConfig(context.Background(), poolConfig)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("error creating connection pool: %v", err)
-// 	}
-
-// 	// Test the connection
-// 	if err := pool.Ping(context.Background()); err != nil {
-// 		return nil, fmt.Errorf("error connecting to the database: %v", err)
-// 	}
-
-// 	return pool, nil
-// }
-
 func SetupGormDatabase() (*gorm.DB, error) {
-	dsn := "host=localhost user=postgres password=12345 dbname=postgres port=5432 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(GetConnectionString()), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		return nil, err
 	}
 
+	// Migrate the schema
 	err = db.AutoMigrate(
 		&domain.Menu{},
 		&domain.Category{},
 		&domain.Product{},
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to migrate database: %v", err)
 	}
 
 	return db, nil

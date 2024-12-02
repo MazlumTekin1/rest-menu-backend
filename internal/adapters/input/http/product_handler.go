@@ -1,5 +1,7 @@
 package http
 
+//PATH: internal/adapters/input/http/product_handler.go
+
 import (
 	"rest-menu-service/internal/application/commands"
 	"rest-menu-service/internal/application/queries"
@@ -28,6 +30,7 @@ func NewProductHandler(productService ports.ProductService) *ProductHandler {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /products [post]
+// @Security Bearer
 func (h *ProductHandler) CreateProduct(c *fiber.Ctx) error {
 	var cmd commands.CreateProductCommand
 	if err := c.BodyParser(&cmd); err != nil {
@@ -60,6 +63,7 @@ func (h *ProductHandler) CreateProduct(c *fiber.Ctx) error {
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /products/{id} [put]
+// @Security Bearer
 func (h *ProductHandler) UpdateProduct(c *fiber.Ctx) error {
 	var cmd commands.UpdateProductCommand
 	if err := c.BodyParser(&cmd); err != nil {
@@ -91,6 +95,7 @@ func (h *ProductHandler) UpdateProduct(c *fiber.Ctx) error {
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /products/{id} [get]
+// @Security Bearer
 func (h *ProductHandler) GetProductById(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -122,6 +127,7 @@ func (h *ProductHandler) GetProductById(c *fiber.Ctx) error {
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /products/{id} [delete]
+// @Security Bearer
 func (h *ProductHandler) DeleteProduct(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -158,6 +164,7 @@ func (h *ProductHandler) DeleteProduct(c *fiber.Ctx) error {
 // @Success 200 {array} dto.ProductResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /products [get]
+// @Security Bearer
 func (h *ProductHandler) ListProducts(c *fiber.Ctx) error {
 	menuID, _ := strconv.Atoi(c.Query("menuId"))
 	categoryID, _ := strconv.Atoi(c.Query("categoryId"))
@@ -190,12 +197,11 @@ func (h *ProductHandler) ListProducts(c *fiber.Ctx) error {
 }
 
 // Router setup
-func SetupProductRoutes(app *fiber.App, handler *ProductHandler) {
-	productGroup := app.Group("/api/v1/products")
+func SetupProductRoutes(api fiber.Router, handler *ProductHandler) {
 
-	productGroup.Post("/", handler.CreateProduct)
-	productGroup.Put("/:id", handler.UpdateProduct)
-	productGroup.Get("/:id", handler.GetProductById)
-	productGroup.Delete("/:id", handler.DeleteProduct)
-	productGroup.Get("/", handler.ListProducts)
+	api.Post("/products/", handler.CreateProduct)
+	api.Put("/products/:id", handler.UpdateProduct)
+	api.Get("/products/:id", handler.GetProductById)
+	api.Delete("/products/:id", handler.DeleteProduct)
+	api.Get("/products/", handler.ListProducts)
 }

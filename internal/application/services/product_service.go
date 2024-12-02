@@ -1,5 +1,7 @@
 package services
 
+//PATH: internal/application/services/product_service.go
+
 import (
 	"context"
 	"rest-menu-service/internal/application/commands"

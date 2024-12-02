@@ -1,5 +1,7 @@
 package queries
 
+//PATH: internal/application/queries/product_queries.go
+
 type ListProductsQuery struct {
 	MenuID     int
 	CategoryID int

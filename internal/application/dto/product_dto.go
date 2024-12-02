@@ -1,5 +1,7 @@
 package dto
 
+//PATH: internal/application/dto/product_dto.go
+
 type ProductResponse struct {
 	ID           int     `json:"id"`
 	Name         string  `json:"name"`

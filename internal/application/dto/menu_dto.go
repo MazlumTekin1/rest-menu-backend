@@ -1,5 +1,7 @@
 package dto
 
+//PATH: internal/application/dto/menu_dto.go
+
 type MenuResponse struct {
 	ID           int           `json:"id"`
 	Name         string        `json:"name"`

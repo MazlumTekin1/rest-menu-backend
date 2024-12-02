@@ -1,5 +1,7 @@
 package queries
 
+//PATH: internal/application/queries/category_queries.go
+
 type GetCategoryQuery struct {
 	ID int
 }

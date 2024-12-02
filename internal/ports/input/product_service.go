@@ -1,5 +1,7 @@
 package ports
 
+//PATH: internal/ports/input/product_service.go
+
 import (
 	"context"
 	"rest-menu-service/internal/application/commands"

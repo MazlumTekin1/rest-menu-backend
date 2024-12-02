@@ -1,5 +1,7 @@
 package http
 
+//PATH: internal/adapters/input/http/menu_handler.go
+
 import (
 	"rest-menu-service/internal/application/commands"
 	"rest-menu-service/internal/application/queries"
@@ -28,6 +30,7 @@ func NewMenuHandler(menuService ports.MenuService) *MenuHandler {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /menus [post]
+// @Security Bearer
 func (h *MenuHandler) CreateMenu(c *fiber.Ctx) error {
 	var cmd commands.CreateMenuCommand
 	if err := c.BodyParser(&cmd); err != nil {
@@ -60,6 +63,7 @@ func (h *MenuHandler) CreateMenu(c *fiber.Ctx) error {
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /menus/{id} [put]
+// @Security Bearer
 func (h *MenuHandler) UpdateMenu(c *fiber.Ctx) error {
 	var cmd commands.UpdateMenuCommand
 	if err := c.BodyParser(&cmd); err != nil {
@@ -91,6 +95,7 @@ func (h *MenuHandler) UpdateMenu(c *fiber.Ctx) error {
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /menus/{id} [get]
+// @Security Bearer
 func (h *MenuHandler) GetMenuByID(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -122,6 +127,7 @@ func (h *MenuHandler) GetMenuByID(c *fiber.Ctx) error {
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /menus/{id} [delete]
+// @Security Bearer
 func (h *MenuHandler) DeleteMenu(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -153,6 +159,7 @@ func (h *MenuHandler) DeleteMenu(c *fiber.Ctx) error {
 // @Success 200 {array} dto.MenuResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /menus [get]
+// @Security Bearer
 func (h *MenuHandler) ListMenus(c *fiber.Ctx) error {
 	restaurantID, _ := strconv.Atoi(c.Query("restaurantId"))
 
@@ -171,13 +178,11 @@ func (h *MenuHandler) ListMenus(c *fiber.Ctx) error {
 	return c.JSON(menus)
 }
 
-// Router setup
-func SetupMenuRoutes(app *fiber.App, handler *MenuHandler) {
-	menuGroup := app.Group("/api/v1/menus")
+func SetupMenuRoutes(api fiber.Router, handler *MenuHandler) {
 
-	menuGroup.Post("/", handler.CreateMenu)
-	menuGroup.Put("/:id", handler.UpdateMenu)
-	menuGroup.Get("/:id", handler.GetMenuByID)
-	menuGroup.Delete("/:id", handler.DeleteMenu)
-	menuGroup.Get("/", handler.ListMenus)
+	api.Post("/menus/", handler.CreateMenu)
+	api.Put("/menus/:id", handler.UpdateMenu)
+	api.Get("/menus/:id", handler.GetMenuByID)
+	api.Delete("/menus/:id", handler.DeleteMenu)
+	api.Get("/menus/", handler.ListMenus)
 }

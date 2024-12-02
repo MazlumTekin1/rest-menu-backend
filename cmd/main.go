@@ -1,10 +1,15 @@
 package main
 
+//PATH: cmd/main.go
+
 import (
 	"log"
+	"os"
 	"rest-menu-service/internal/adapters/input/http"
+	middleware "rest-menu-service/internal/adapters/input/http/middleware"
 	gorm "rest-menu-service/internal/adapters/output/gorm"
 	"rest-menu-service/internal/application/services"
+	"rest-menu-service/internal/infrastructure/config"
 	db_gorm "rest-menu-service/internal/infrastructure/config"
 
 	"github.com/gofiber/fiber/v2"
@@ -25,7 +30,26 @@ import (
 
 // @host localhost:4000
 // @BasePath /api/v1
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
 func main() {
+
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		// Environment değişkeni bulunamadıysa, development için default bir değer kullan
+		if os.Getenv("GO_ENV") != "production" {
+			// Development ortamında default secret kullan
+			// os.Setenv("JWT_SECRET", "your-development-secret-key-here")
+			// Tekrar konfigürasyonu yükle
+			cfg, err = config.LoadConfig()
+			if err != nil {
+				log.Fatalf("Failed to load configuration: %v", err)
+			}
+		} else {
+			log.Fatalf("Failed to load configuration: %v", err)
+		}
+	}
 	// Setup database with GORM
 	db, err := db_gorm.SetupGormDatabase()
 	if err != nil {
@@ -47,31 +71,26 @@ func main() {
 		ErrorHandler: customErrorHandler,
 	})
 
-	// Swagger routes
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	// Setup API routes
 	menuHandler := http.NewMenuHandler(menuService)
 	productHandler := http.NewProductHandler(productService)
 	categoryHandler := http.NewCategoryHandler(categoryService)
 
-	http.SetupMenuRoutes(app, menuHandler)
-	http.SetupProductRoutes(app, productHandler)
-	http.SetupCategoryRoutes(app, categoryHandler)
+	api := app.Group("/api/v1", middleware.RequireAuth(cfg.JWT.Secret))
+	http.SetupMenuRoutes(api, menuHandler)
+	http.SetupProductRoutes(api, productHandler)
+	http.SetupCategoryRoutes(api, categoryHandler)
 
 	log.Fatal(app.Listen(":4000"))
 }
 
 func customErrorHandler(c *fiber.Ctx, err error) error {
-	// Default 500 statuscode
 	code := fiber.StatusInternalServerError
 
-	// Retrieve the custom statuscode if it's an fiber.*Error
 	if e, ok := err.(*fiber.Error); ok {
 		code = e.Code
 	}
-
-	// Send custom error response
 	return c.Status(code).JSON(fiber.Map{
 		"error": err.Error(),
 	})

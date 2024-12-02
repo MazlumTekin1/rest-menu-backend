@@ -1,5 +1,7 @@
 package http
 
+//PATH: internal/adapters/input/http/category_handler.go
+
 import (
 	"rest-menu-service/internal/application/commands"
 	"rest-menu-service/internal/application/queries"
@@ -18,14 +20,15 @@ func NewCategoryHandler(categoryService ports.CategoryService) *CategoryHandler 
 
 // @Summary Create a new category
 // @Description Create a new restaurant category
-// @Tags categorys
+// @Tags categories
 // @Accept json
 // @Produce json
 // @Param category body commands.CreateCategoryCommand true "Category Information"
 // @Success 201 {object} dto.CategoryResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /categorys [post]
+// @Router /categories/ [post]
+// @Security Bearer
 func (h *CategoryHandler) CreateCategory(c *fiber.Ctx) error {
 	var cmd commands.CreateCategoryCommand
 	if err := c.BodyParser(&cmd); err != nil {
@@ -48,7 +51,7 @@ func (h *CategoryHandler) CreateCategory(c *fiber.Ctx) error {
 
 // @Summary Update a category
 // @Description Update an existing restaurant category
-// @Tags categorys
+// @Tags categories
 // @Accept json
 // @Produce json
 // @Param id path int true "Category ID"
@@ -57,7 +60,8 @@ func (h *CategoryHandler) CreateCategory(c *fiber.Ctx) error {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /categorys/{id} [put]
+// @Router /categories/{id} [put]
+// @Security Bearer
 func (h *CategoryHandler) UpdateCategory(c *fiber.Ctx) error {
 	var cmd commands.UpdateCategoryCommand
 	if err := c.BodyParser(&cmd); err != nil {
@@ -81,14 +85,15 @@ func (h *CategoryHandler) UpdateCategory(c *fiber.Ctx) error {
 
 // @Summary Get a category by ID
 // @Description Get a restaurant category by its ID
-// @Tags categorys
+// @Tags categories
 // @Accept json
 // @Produce json
 // @Param id path int true "Category ID"
 // @Success 200 {object} dto.CategoryResponse
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /categorys/{id} [get]
+// @Router /categories/{id} [get]
+// @Security Bearer
 func (h *CategoryHandler) GetCategory(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -112,14 +117,15 @@ func (h *CategoryHandler) GetCategory(c *fiber.Ctx) error {
 
 // @Summary Delete a category
 // @Description Soft delete a restaurant category
-// @Tags categorys
+// @Tags categories
 // @Accept json
 // @Produce json
 // @Param id path int true "Category ID"
 // @Success 204 "No Content"
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /categorys/{id} [delete]
+// @Router /categories/{id} [delete]
+// @Security Bearer
 func (h *CategoryHandler) DeleteCategory(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -142,15 +148,16 @@ func (h *CategoryHandler) DeleteCategory(c *fiber.Ctx) error {
 	})
 }
 
-// @Summary List categorys
-// @Description Get a list of restaurant categorys
-// @Tags categorys
+// @Summary List categories
+// @Description Get a list of restaurant categories
+// @Tags categories
 // @Accept json
 // @Produce json
 // @Param restaurantId query int false "Filter by Menu ID"
 // @Success 200 {array} dto.CategoryResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /categorys [get]
+// @Router /categories/ [get]
+// @Security Bearer
 func (h *CategoryHandler) ListCategory(c *fiber.Ctx) error {
 	menuID, err := c.ParamsInt("restaurant_id")
 	if err != nil {
@@ -161,24 +168,23 @@ func (h *CategoryHandler) ListCategory(c *fiber.Ctx) error {
 	}
 
 	query := queries.ListCategoriesQuery{MenuID: menuID}
-	categorys, err := h.categoryService.ListCategorys(c.Context(), query)
+	categories, err := h.categoryService.ListCategorys(c.Context(), query)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
-			"error":   "Failed to list categorys",
+			"error":   "Failed to list categories",
 			"details": err.Error(),
 		})
 	}
 
-	return c.JSON(categorys)
+	return c.JSON(categories)
 }
 
 // Router setup
-func SetupCategoryRoutes(app *fiber.App, handler *CategoryHandler) {
-	categoryGroup := app.Group("/api/v1/categories")
+func SetupCategoryRoutes(api fiber.Router, handler *CategoryHandler) {
 
-	categoryGroup.Post("/", handler.CreateCategory)
-	categoryGroup.Put("/:id", handler.UpdateCategory)
-	categoryGroup.Get("/:id", handler.GetCategory)
-	categoryGroup.Delete("/:id", handler.DeleteCategory)
-	categoryGroup.Get("/", handler.ListCategory)
+	api.Post("/categories/", handler.CreateCategory)
+	api.Put("/categories/:id", handler.UpdateCategory)
+	api.Get("/categories/:id", handler.GetCategory)
+	api.Delete("/categories/:id", handler.DeleteCategory)
+	api.Get("/categories/", handler.ListCategory)
 }

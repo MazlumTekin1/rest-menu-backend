@@ -1,5 +1,7 @@
 package dto
 
+//PATH: internal/application/dto/category_dto.go
+
 type CategoryResponse struct {
 	ID        int    `json:"id"`
 	Name      string `json:"name"`

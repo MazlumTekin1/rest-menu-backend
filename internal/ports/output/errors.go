@@ -1,5 +1,7 @@
 package ports
 
+//PATH: internal/ports/output/errors.go
+
 import "errors"
 
 var (
@@ -12,6 +14,7 @@ var (
 	ErrInvalidID        = errors.New("invalid ID")
 	ErrInvalidRequest   = errors.New("invalid request")
 	ErrInternalServer   = errors.New("internal server error")
+	ErrUserNotFound     = errors.New("user not found")
 )
 
 type ErrorResponse struct {

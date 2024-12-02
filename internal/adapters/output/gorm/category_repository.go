@@ -1,5 +1,7 @@
 package gorm
 
+//PATH: internal/adapters/output/gorm/category_repository.go
+
 import (
 	"context"
 	"rest-menu-service/internal/domain"

@@ -1,5 +1,7 @@
 package middleware
 
+//PATH: internal/adapters/input/http/middleware/auth.go
+
 import (
 	"strings"
 

@@ -37,11 +37,7 @@ func main() {
 
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		// Environment değişkeni bulunamadıysa, development için default bir değer kullan
 		if os.Getenv("GO_ENV") != "production" {
-			// Development ortamında default secret kullan
-			// os.Setenv("JWT_SECRET", "your-development-secret-key-here")
-			// Tekrar konfigürasyonu yükle
 			cfg, err = config.LoadConfig()
 			if err != nil {
 				log.Fatalf("Failed to load configuration: %v", err)
@@ -50,7 +46,7 @@ func main() {
 			log.Fatalf("Failed to load configuration: %v", err)
 		}
 	}
-	// Setup database with GORM
+
 	db, err := db_gorm.SetupGormDatabase()
 	if err != nil {
 		log.Fatalf("Could not setup database: %v", err)
@@ -69,6 +65,11 @@ func main() {
 	// Setup Fiber app
 	app := fiber.New(fiber.Config{
 		ErrorHandler: customErrorHandler,
+	})
+
+	app.Use(func(c *fiber.Ctx) error {
+		log.Printf("HTTP Request Received: %s %s", c.Method(), c.Path())
+		return c.Next()
 	})
 
 	app.Get("/swagger/*", swagger.HandlerDefault)

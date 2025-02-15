@@ -25,8 +25,8 @@ func NewCategoryHandler(categoryService ports.CategoryService) *CategoryHandler 
 // @Produce json
 // @Param category body commands.CreateCategoryCommand true "Category Information"
 // @Success 201 {object} dto.CategoryResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /categories/ [post]
 // @Security Bearer
 func (h *CategoryHandler) CreateCategory(c *fiber.Ctx) error {
@@ -57,9 +57,9 @@ func (h *CategoryHandler) CreateCategory(c *fiber.Ctx) error {
 // @Param id path int true "Category ID"
 // @Param category body commands.UpdateCategoryCommand true "Category Information"
 // @Success 200 {object} dto.CategoryResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} ports.ErrorResponse
+// @Failure 404 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /categories/{id} [put]
 // @Security Bearer
 func (h *CategoryHandler) UpdateCategory(c *fiber.Ctx) error {
@@ -90,8 +90,8 @@ func (h *CategoryHandler) UpdateCategory(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path int true "Category ID"
 // @Success 200 {object} dto.CategoryResponse
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 404 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /categories/{id} [get]
 // @Security Bearer
 func (h *CategoryHandler) GetCategory(c *fiber.Ctx) error {
@@ -122,8 +122,8 @@ func (h *CategoryHandler) GetCategory(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path int true "Category ID"
 // @Success 204 "No Content"
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 404 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /categories/{id} [delete]
 // @Security Bearer
 func (h *CategoryHandler) DeleteCategory(c *fiber.Ctx) error {
@@ -155,7 +155,7 @@ func (h *CategoryHandler) DeleteCategory(c *fiber.Ctx) error {
 // @Produce json
 // @Param restaurantId query int false "Filter by Menu ID"
 // @Success 200 {array} dto.CategoryResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /categories/ [get]
 // @Security Bearer
 func (h *CategoryHandler) ListCategory(c *fiber.Ctx) error {

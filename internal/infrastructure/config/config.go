@@ -20,7 +20,7 @@ type JWTConfig struct {
 
 func LoadConfig() (*Config, error) {
 
-	absPath, err := filepath.Abs("../.env")
+	absPath, err := filepath.Abs("./.env")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get absolute path: %v", err)
 	}

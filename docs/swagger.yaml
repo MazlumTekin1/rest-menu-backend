@@ -1,0 +1,657 @@
+basePath: /api/v1
+definitions:
+  commands.CreateCategoryCommand:
+    properties:
+      createUserID:
+        type: integer
+      imageURL:
+        type: string
+      menuID:
+        type: integer
+      name:
+        type: string
+    type: object
+  commands.CreateMenuCommand:
+    properties:
+      createUserID:
+        type: integer
+      name:
+        type: string
+      restaurantID:
+        type: integer
+    type: object
+  commands.CreateProductCommand:
+    properties:
+      categoryID:
+        type: integer
+      createUserID:
+        type: integer
+      menuID:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      productDescription:
+        type: string
+      productImageURL:
+        type: string
+    type: object
+  commands.UpdateCategoryCommand:
+    properties:
+      id:
+        type: integer
+      imageURL:
+        type: string
+      menuID:
+        type: integer
+      name:
+        type: string
+      updateUserID:
+        type: integer
+    type: object
+  commands.UpdateMenuCommand:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      restaurantID:
+        type: integer
+      updateUserID:
+        type: integer
+    type: object
+  commands.UpdateProductCommand:
+    properties:
+      categoryID:
+        type: integer
+      id:
+        type: integer
+      menuID:
+        type: integer
+      name:
+        type: string
+      updateUserID:
+        type: integer
+    type: object
+  dto.CategoryDTO:
+    properties:
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.CategoryResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      menu_id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.MenuResponse:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/dto.CategoryDTO'
+        type: array
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      restaurant_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  dto.ProductResponse:
+    properties:
+      category_id:
+        type: integer
+      category_name:
+        type: string
+      create_user_id:
+        type: integer
+      created_date:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      menu_id:
+        type: integer
+      menu_name:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      update_user_id:
+        type: integer
+      updated_date:
+        type: string
+    type: object
+  ports.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+host: localhost:4000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a restaurant menu service API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Restaurant Menu API
+  version: "2.0"
+paths:
+  /categories/:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of restaurant categories
+      parameters:
+      - description: Filter by Menu ID
+        in: query
+        name: restaurantId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.CategoryResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: List categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: Create a new restaurant category
+      parameters:
+      - description: Category Information
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/commands.CreateCategoryCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CategoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Create a new category
+      tags:
+      - categories
+  /categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete a restaurant category
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Delete a category
+      tags:
+      - categories
+    get:
+      consumes:
+      - application/json
+      description: Get a restaurant category by its ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CategoryResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Get a category by ID
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: Update an existing restaurant category
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category Information
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/commands.UpdateCategoryCommand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CategoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Update a category
+      tags:
+      - categories
+  /menus:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all menus with optional restaurant filter
+      parameters:
+      - description: Filter by Restaurant ID
+        in: query
+        name: restaurantId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.MenuResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: List all menus
+      tags:
+      - menus
+    post:
+      consumes:
+      - application/json
+      description: Create a new restaurant menu
+      parameters:
+      - description: Menu Information
+        in: body
+        name: menu
+        required: true
+        schema:
+          $ref: '#/definitions/commands.CreateMenuCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MenuResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Create a new menu
+      tags:
+      - menus
+  /menus/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete a restaurant menu
+      parameters:
+      - description: Menu ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Delete a menu
+      tags:
+      - menus
+    get:
+      consumes:
+      - application/json
+      description: Get a specific menu by its ID
+      parameters:
+      - description: Menu ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MenuResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Get menu by ID
+      tags:
+      - menus
+    put:
+      consumes:
+      - application/json
+      description: Update an existing restaurant menu
+      parameters:
+      - description: Menu ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Menu Information
+        in: body
+        name: menu
+        required: true
+        schema:
+          $ref: '#/definitions/commands.UpdateMenuCommand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MenuResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Update a menu
+      tags:
+      - menus
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of products with optional filters
+      parameters:
+      - description: Filter by Menu ID
+        in: query
+        name: menuId
+        type: integer
+      - description: Filter by Category ID
+        in: query
+        name: categoryId
+        type: integer
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Page size (default: 10)'
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.ProductResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: List products
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Create a new restaurant product
+      parameters:
+      - description: Product Information
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/commands.CreateProductCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.ProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Create a new product
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Delete a product
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: Get a restaurant product by its ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Get a product by ID
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update an existing restaurant product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Product Information
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/commands.UpdateProductCommand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ports.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Update a product
+      tags:
+      - products
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

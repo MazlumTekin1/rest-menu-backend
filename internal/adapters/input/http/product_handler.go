@@ -27,8 +27,8 @@ func NewProductHandler(productService ports.ProductService) *ProductHandler {
 // @Produce json
 // @Param product body commands.CreateProductCommand true "Product Information"
 // @Success 201 {object} dto.ProductResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /products [post]
 // @Security Bearer
 func (h *ProductHandler) CreateProduct(c *fiber.Ctx) error {
@@ -59,9 +59,9 @@ func (h *ProductHandler) CreateProduct(c *fiber.Ctx) error {
 // @Param id path int true "Product ID"
 // @Param product body commands.UpdateProductCommand true "Product Information"
 // @Success 200 {object} dto.ProductResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} ports.ErrorResponse
+// @Failure 404 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /products/{id} [put]
 // @Security Bearer
 func (h *ProductHandler) UpdateProduct(c *fiber.Ctx) error {
@@ -92,8 +92,8 @@ func (h *ProductHandler) UpdateProduct(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path int true "Product ID"
 // @Success 200 {object} dto.ProductResponse
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 404 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /products/{id} [get]
 // @Security Bearer
 func (h *ProductHandler) GetProductById(c *fiber.Ctx) error {
@@ -124,8 +124,8 @@ func (h *ProductHandler) GetProductById(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path int true "Product ID"
 // @Success 204 "No Content"
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 404 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /products/{id} [delete]
 // @Security Bearer
 func (h *ProductHandler) DeleteProduct(c *fiber.Ctx) error {
@@ -162,7 +162,7 @@ func (h *ProductHandler) DeleteProduct(c *fiber.Ctx) error {
 // @Param page query int false "Page number (default: 1)"
 // @Param pageSize query int false "Page size (default: 10)"
 // @Success 200 {array} dto.ProductResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /products [get]
 // @Security Bearer
 func (h *ProductHandler) ListProducts(c *fiber.Ctx) error {

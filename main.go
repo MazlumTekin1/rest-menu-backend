@@ -6,18 +6,19 @@ import (
 	"log"
 	"os"
 	"rest-menu-service/internal/adapters/input/http"
-	middleware "rest-menu-service/internal/adapters/input/http/middleware"
 	gorm "rest-menu-service/internal/adapters/output/gorm"
 	"rest-menu-service/internal/application/services"
 	"rest-menu-service/internal/infrastructure/config"
 	db_gorm "rest-menu-service/internal/infrastructure/config"
+
+	_ "rest-menu-service/docs" // swagger docs
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
 )
 
 // @title Restaurant Menu API
-// @version 1.0
+// @version 2.0
 // @description This is a restaurant menu service API
 // @termsOfService http://swagger.io/terms/
 
@@ -35,10 +36,12 @@ import (
 // @name Authorization
 func main() {
 
-	cfg, err := config.LoadConfig()
+	// cfg, err := config.LoadConfig()
+	_, err := config.LoadConfig()
 	if err != nil {
 		if os.Getenv("GO_ENV") != "production" {
-			cfg, err = config.LoadConfig()
+			// cfg, err = config.LoadConfig()
+			_, err = config.LoadConfig()
 			if err != nil {
 				log.Fatalf("Failed to load configuration: %v", err)
 			}
@@ -78,7 +81,8 @@ func main() {
 	productHandler := http.NewProductHandler(productService)
 	categoryHandler := http.NewCategoryHandler(categoryService)
 
-	api := app.Group("/api/v1", middleware.RequireAuth(cfg.JWT.Secret))
+	// api := app.Group("/api/v1", middleware.RequireAuth(cfg.JWT.Secret))
+	api := app.Group("/api/v1")
 	http.SetupMenuRoutes(api, menuHandler)
 	http.SetupProductRoutes(api, productHandler)
 	http.SetupCategoryRoutes(api, categoryHandler)

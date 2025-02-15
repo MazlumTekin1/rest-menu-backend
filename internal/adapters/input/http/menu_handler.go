@@ -27,8 +27,8 @@ func NewMenuHandler(menuService ports.MenuService) *MenuHandler {
 // @Produce json
 // @Param menu body commands.CreateMenuCommand true "Menu Information"
 // @Success 201 {object} dto.MenuResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /menus [post]
 // @Security Bearer
 func (h *MenuHandler) CreateMenu(c *fiber.Ctx) error {
@@ -59,9 +59,9 @@ func (h *MenuHandler) CreateMenu(c *fiber.Ctx) error {
 // @Param id path int true "Menu ID"
 // @Param menu body commands.UpdateMenuCommand true "Menu Information"
 // @Success 200 {object} dto.MenuResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} ports.ErrorResponse
+// @Failure 404 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /menus/{id} [put]
 // @Security Bearer
 func (h *MenuHandler) UpdateMenu(c *fiber.Ctx) error {
@@ -92,8 +92,8 @@ func (h *MenuHandler) UpdateMenu(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path int true "Menu ID"
 // @Success 200 {object} dto.MenuResponse
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 404 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /menus/{id} [get]
 // @Security Bearer
 func (h *MenuHandler) GetMenuByID(c *fiber.Ctx) error {
@@ -124,8 +124,8 @@ func (h *MenuHandler) GetMenuByID(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path int true "Menu ID"
 // @Success 204 "No Content"
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 404 {object} ports.ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /menus/{id} [delete]
 // @Security Bearer
 func (h *MenuHandler) DeleteMenu(c *fiber.Ctx) error {
@@ -157,7 +157,7 @@ func (h *MenuHandler) DeleteMenu(c *fiber.Ctx) error {
 // @Produce json
 // @Param restaurantId query int false "Filter by Restaurant ID"
 // @Success 200 {array} dto.MenuResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 500 {object} ports.ErrorResponse
 // @Router /menus [get]
 // @Security Bearer
 func (h *MenuHandler) ListMenus(c *fiber.Ctx) error {
